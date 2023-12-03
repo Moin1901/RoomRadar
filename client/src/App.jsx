@@ -11,6 +11,8 @@ import CreateListing from "./pages/CreateListing";
 import Listing from "./pages/Listing";
 import UpdateListing from "./pages/UpdateListing";
 import Search from "./pages/Search";
+import Failed from "./pages/Failed";
+import Succ from "./pages/Succ";
 
 const App = () => {
   return (
@@ -18,6 +20,8 @@ const App = () => {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/success" element={<Succ />} />
+        <Route path="/failed" element={<Failed />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/about" element={<About />} />

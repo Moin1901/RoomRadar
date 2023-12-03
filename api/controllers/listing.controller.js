@@ -1,6 +1,10 @@
 import Listing from "../models/listing.model.js";
 import { errorHandler } from "../utils/error.js";
+import stripe from "stripe";
 
+const stripeInstance = stripe(
+  "sk_test_51OJEi5SJKbPvKTj0b8ihbZRVJZjXFpQfuBbssZ4IkaUEgCysAHN6daeMAJpGlx1U9TiB73ZHwaObGB2PgRToFa1p00RupMzf30"
+);
 export const createListing = async (req, res, next) => {
   try {
     const listing = await Listing.create(req.body);
@@ -109,4 +113,32 @@ export const getListings = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+export const payment = async (req, res) => {
+  const { products } = req.body;
+
+  const lineItems = [
+    {
+      price_data: {
+        currency: "inr",
+        product_data: {
+          name: products.name,
+          images: products.imageUrls,
+        },
+        unit_amount: (products.regularPrice - products.discountPrice) * 100,
+      },
+      quantity: 1,
+    },
+  ];
+
+  const session = await stripeInstance.checkout.sessions.create({
+    payment_method_types: ["card"],
+    line_items: lineItems,
+    mode: "payment",
+    success_url: "http://localhost:5173/success",
+    cancel_url: "http://localhost:5173/failed",
+  });
+
+  res.json({ id: session.id });
 };

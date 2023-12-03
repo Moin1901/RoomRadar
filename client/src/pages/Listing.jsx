@@ -15,6 +15,7 @@ import {
   FaShare,
 } from "react-icons/fa";
 import Contact from "../components/Contact";
+import { loadStripe } from "@stripe/stripe-js";
 
 // https://sabe.io/blog/javascript-format-numbers-commas#:~:text=The%20best%20way%20to%20format,format%20the%20number%20with%20commas.
 
@@ -49,6 +50,36 @@ export default function Listing() {
     };
     fetchListing();
   }, [params.listingId]);
+
+  // payment integration
+
+  const makePayment = async () => {
+    const stripe = await loadStripe(
+      "pk_test_51OJEi5SJKbPvKTj0RU6mlwz0LLe8aF0mIDAW37gg9MxOyZMRmjbESfJUXLTCEgBu9X0OzqstDT9DtMX8iXCoUa2O00AspsYksK"
+    );
+
+    const body = {
+      products: listing,
+    };
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    const response = await fetch("/api/listing/create-checkout-session", {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(body),
+    });
+
+    const session = await response.json();
+
+    const result = stripe.redirectToCheckout({
+      sessionId: session.id,
+    });
+
+    if (result.error) {
+      console.log(result.error);
+    }
+  };
 
   return (
     <main>
@@ -89,25 +120,42 @@ export default function Listing() {
             </p>
           )}
           <div className="flex flex-col max-w-4xl mx-auto p-3 my-7 gap-4">
-            <p className="text-2xl font-semibold">
-              {listing.name} - ${" "}
+            <p className="text-2xl font-semibold ">
+              {listing.name}- Rs{" "}
               {listing.offer
                 ? listing.discountPrice.toLocaleString("en-US")
                 : listing.regularPrice.toLocaleString("en-US")}
+              {listing.offer && "  Discount"}
               {listing.type === "rent" && " / month"}
             </p>
+            <div class="flex  items-center ">
+              <h1 class="text-2xl font-medium text-gray-400">Rs</h1>
+              <h1 class="text-2xl font-bold text-gray-400">
+                -{listing.regularPrice} {listing.type === "rent" && " / month"}
+              </h1>
+            </div>
             <p className="flex items-center mt-6 gap-2 text-slate-600  text-sm">
               <FaMapMarkerAlt className="text-green-700" />
               {listing.address}
             </p>
+
             <div className="flex gap-4">
               <p className="bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-md">
                 {listing.type === "rent" ? "For Rent" : "For Sale"}
               </p>
               {listing.offer && (
                 <p className="bg-green-900 w-full max-w-[200px] text-white text-center p-1 rounded-md">
-                  ${+listing.regularPrice - +listing.discountPrice} OFF
+                  Rs {+listing.regularPrice - +listing.discountPrice}
+                  {listing.type === "rent" && " / month"}
                 </p>
+              )}
+              {currentUser && listing.userRef !== currentUser._id && (
+                <button
+                  className="bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-md"
+                  onClick={makePayment}
+                >
+                  Book Home
+                </button>
               )}
             </div>
             <p className={`${darkMode ? "text-slate-400" : "text-slate-800"}`}>
@@ -144,6 +192,7 @@ export default function Listing() {
                 Contact landlord
               </button>
             )}
+
             {contact && <Contact listing={listing} />}
           </div>
         </div>
