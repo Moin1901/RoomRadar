@@ -136,8 +136,8 @@ export const payment = async (req, res) => {
     payment_method_types: ["card"],
     line_items: lineItems,
     mode: "payment",
-    success_url: "http://localhost:5173/success",
-    cancel_url: "http://localhost:5173/failed",
+    success_url: `${process.env.YOUR_APP_URL}/success`,
+    cancel_url: `${process.env.YOUR_APP_URL}/failed`,
   });
 
   res.json({ id: session.id });
