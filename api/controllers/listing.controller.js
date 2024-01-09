@@ -115,30 +115,30 @@ export const getListings = async (req, res, next) => {
   }
 };
 
-export const payment = async (req, res) => {
-  const { products } = req.body;
+// export const payment = async (req, res) => {
+//   const { products } = req.body;
 
-  const lineItems = [
-    {
-      price_data: {
-        currency: "inr",
-        product_data: {
-          name: products.name,
-          images: products.imageUrls,
-        },
-        unit_amount: (products.regularPrice - products.discountPrice) * 100,
-      },
-      quantity: 1,
-    },
-  ];
+//   const lineItems = [
+//     {
+//       price_data: {
+//         currency: "inr",
+//         product_data: {
+//           name: products.name,
+//           images: products.imageUrls,
+//         },
+//         unit_amount: (products.regularPrice - products.discountPrice) * 100,
+//       },
+//       quantity: 1,
+//     },
+//   ];
 
-  const session = await stripeInstance.checkout.sessions.create({
-    payment_method_types: ["card"],
-    line_items: lineItems,
-    mode: "payment",
-    success_url: `${process.env.YOUR_APP_URL}/success`,
-    cancel_url: `${process.env.YOUR_APP_URL}/failed`,
-  });
+//   const session = await stripeInstance.checkout.sessions.create({
+//     payment_method_types: ["card"],
+//     line_items: lineItems,
+//     mode: "payment",
+//     success_url: `${process.env.YOUR_APP_URL}/success`,
+//     cancel_url: `${process.env.YOUR_APP_URL}/failed`,
+//   });
 
-  res.json({ id: session.id });
-};
+//   res.json({ id: session.id });
+// };

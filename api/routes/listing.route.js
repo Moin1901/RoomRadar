@@ -6,7 +6,6 @@ import {
   updateListing,
   getListing,
   getListings,
-  payment,
 } from "../controllers/listing.controller.js";
 
 const router = express.Router();
@@ -16,6 +15,6 @@ router.delete("/delete/:id", verifyToken, deleteListing);
 router.post("/update/:id", verifyToken, updateListing);
 router.get("/get/:id", getListing);
 router.get("/get", getListings);
-router.post("/create-checkout-session", payment);
+// router.post("/create-checkout-session", payment);
 
 export default router;
