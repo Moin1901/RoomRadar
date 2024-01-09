@@ -1,10 +1,10 @@
 import Listing from "../models/listing.model.js";
 import { errorHandler } from "../utils/error.js";
-import stripe from "stripe";
+// import stripe from "stripe";
 
-const stripeInstance = stripe(
-  "sk_test_51OJEi5SJKbPvKTj0b8ihbZRVJZjXFpQfuBbssZ4IkaUEgCysAHN6daeMAJpGlx1U9TiB73ZHwaObGB2PgRToFa1p00RupMzf30"
-);
+// const stripeInstance = stripe(
+//   "sk_test_51OJEi5SJKbPvKTj0b8ihbZRVJZjXFpQfuBbssZ4IkaUEgCysAHN6daeMAJpGlx1U9TiB73ZHwaObGB2PgRToFa1p00RupMzf30"
+// );
 export const createListing = async (req, res, next) => {
   try {
     const listing = await Listing.create(req.body);
